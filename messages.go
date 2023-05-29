@@ -26,7 +26,7 @@ type BGPUpdate struct {
     UpdateType string  `json:"type"`
     Origin string      `json:"origin"`
     Path []int         `json:"path"`
-    Community []string `json:"community,omitempty"`
+    Community [][]int  `json:"community,omitempty"`
     Announcements []string `json:"announcements"`
     Withdrawals []string   `json:"withdrawals"`
 }
