@@ -30,6 +30,30 @@ func convertASPath(s string) []int {
     return asns_int
 }
 
+func convertCommunity(s string) [][]int {
+    result := [][]int{}
+
+    pairs := strings.Split(s, " ")
+    for _, pair := range pairs {
+        asns := strings.Split(pair, ":")
+        if len(asns) != 2 {
+            continue
+        }
+        from, err := strconv.Atoi(asns[0])
+        if err != nil {
+            continue
+        }
+        to, err := strconv.Atoi(asns[1])
+        if err != nil {
+            continue
+        }
+
+        result = append(result, []int{from, to})
+    }
+
+    return result
+}
+
 /* read messages data from channel provided by kafka consumer and send them to relevant subscribers */
 func monitorBGPUpdates(ch <-chan KafkaMessage, subscriptions *Subscriptions) {
     bgpupdate := BGPUpdate{}
@@ -41,8 +65,10 @@ func monitorBGPUpdates(ch <-chan KafkaMessage, subscriptions *Subscriptions) {
             return
         }
         bgpmsg := RisData{Type:"ris_message", Data:bgpupdate}
-        for conn, _ := range conns {
-            conn.SocketWriteJSON(bgpmsg)
+        for conn := range conns {
+            if err := conn.SocketWriteJSON(bgpmsg); err != nil {
+                log.Println(err)
+            }
         }
     }
 
@@ -66,6 +92,7 @@ func monitorBGPUpdates(ch <-chan KafkaMessage, subscriptions *Subscriptions) {
                 UpdateType:strings.ToUpper(msg.Type),
                 Peer:msg.Peer,
                 Origin:msg.Origin,
+                Community:convertCommunity(msg.Comms),
                 Path:convertASPath(msg.ASPath),
             }
             if msg.Type == "withdraw" {
