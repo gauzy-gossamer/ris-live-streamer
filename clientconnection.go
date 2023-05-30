@@ -26,8 +26,8 @@ type ClientConnection struct {
     last_sent time.Time
 }
 
-func NewClientConnection(conn *websocket.Conn, subs *Subscriptions) ClientConnection {
-    cconn := ClientConnection{conn:conn, subscriptions:subs}
+func NewClientConnection(conn *websocket.Conn, subs *Subscriptions) *ClientConnection {
+    cconn := &ClientConnection{conn:conn, subscriptions:subs}
     cconn.closed = make(chan bool)
     cconn.last_sent = time.Now()
     return cconn
@@ -53,7 +53,7 @@ func (c *ClientConnection) SocketWrite(message []byte) error {
 
 func getRisError(message string) RisData {
     response := RisData{}
-    response.Type = "ris_error"
+    response.Type = RIS_ERROR
     response.Data = ErrMessage{Message:message}
 
     return response
@@ -64,17 +64,17 @@ func (c *ClientConnection) ProcessCommand(cmdType string, data interface{}) RisD
     switch cmdType {
     case "ping":
         response.Type = "pong"
-    case "ris_subscribe":
+    case RIS_SUBSCRIBE:
         if sub, ok := data.(map[string]interface{}) ;  ok {
-            response.Type = "ris_subscribe_ok"
+            response.Type = RIS_SUBSCRIBE_OK
             c.subscriptions.Add(c.subscriptions.ParseSub(sub), c)
 
         } else {
             response = getRisError("unknown command")
         }
-    case "ris_unsubscribe":
+    case RIS_UNSUBSCRIBE:
         if sub, ok := data.(map[string]interface{}) ;  ok {
-            response.Type = "ris_unsubscribe_ok"
+            response.Type =  RIS_UNSUBSCRIBE_OK
             deleted := c.subscriptions.Delete(c.subscriptions.ParseSub(sub), c)
             if !deleted {
                 response = getRisError("subscription not found")

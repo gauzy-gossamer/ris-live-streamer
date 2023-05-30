@@ -1,5 +1,14 @@
 package main
 
+var MESSAGE_PREFIX string = "ris"
+
+var RIS_ERROR string = MESSAGE_PREFIX + "_error"
+var RIS_SUBSCRIBE string = MESSAGE_PREFIX + "_subscribe"
+var RIS_UNSUBSCRIBE string = MESSAGE_PREFIX + "_unsubscribe"
+var RIS_SUBSCRIBE_OK string = MESSAGE_PREFIX + "_subscribe_ok"
+var RIS_UNSUBSCRIBE_OK string = MESSAGE_PREFIX + "_unsubscribe_ok"
+var RIS_MESSAGE string = MESSAGE_PREFIX + "_message"
+
 /*
 message received from Kafka
 */
