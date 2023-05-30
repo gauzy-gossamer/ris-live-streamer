@@ -64,7 +64,7 @@ func monitorBGPUpdates(ch <-chan KafkaMessage, subscriptions *Subscriptions) {
         if len(conns) == 0 {
             return
         }
-        bgpmsg := RisData{Type:"ris_message", Data:bgpupdate}
+        bgpmsg := RisData{Type:RIS_MESSAGE, Data:bgpupdate}
         for conn := range conns {
             if err := conn.SocketWriteJSON(bgpmsg); err != nil {
                 log.Println(err)

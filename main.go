@@ -64,7 +64,9 @@ func main() {
 
     server.subscriptions = NewSubscriptions()
 
-    go processKafkaMessages(kafka_ch, config.Kafka)
+    for _, topic := range config.Kafka.Topics {
+        go processKafkaMessages(kafka_ch, config.Kafka, topic)
+    }
     go monitorBGPUpdates(kafka_ch, server.subscriptions)
 
     http.HandleFunc(config.WSPath, WSHandler)

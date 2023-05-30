@@ -10,11 +10,11 @@ import (
 )
 
 /* read from kafka and write messages to ch that's listened by monitorBGPUpdates */
-func processKafkaMessages(ch chan<- KafkaMessage, config KafkaConfig) {
+func processKafkaMessages(ch chan<- KafkaMessage, config KafkaConfig, topic KafkaTopic) {
     r := kafka.NewReader(kafka.ReaderConfig{
         Brokers:   config.Brokers,
-        GroupID:   config.GroupID,
-        Topic:     config.Topic,
+        GroupID:   topic.GroupID,
+        Topic:     topic.Topic,
         Partition: 0,
         MinBytes:  10e3, //10KB
         MaxBytes:  10e6, // 10MB

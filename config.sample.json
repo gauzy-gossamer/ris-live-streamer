@@ -4,7 +4,9 @@
     "listen":"0.0.0.0:8080",
     "kafka":{
     	"brokers":["localhost:9092"],
-    	"group_id":"main-group",
-    	"topic":"my-topic2"    
+        "topics":[{
+            "group_id":"main-group",
+            "topic":"my-topic2"
+        }]
     }
 }

@@ -7,10 +7,14 @@ import (
     "encoding/json"
 )
 
-type KafkaConfig struct {
-    Brokers  []string `json:"brokers"`
+type KafkaTopic struct {
     GroupID  string   `json:"group_id"`
     Topic    string   `json:"topic"`
+}
+
+type KafkaConfig struct {
+    Brokers  []string `json:"brokers"`
+    Topics []KafkaTopic `json:"topics"`
 }
 
 type Config struct {
